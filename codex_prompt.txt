@@ -1,0 +1,16 @@
+You are a senior ML engineer for FX time series (EURUSD H1). Analyze and improve the attached code & data.
+
+Do the following (priority order):
+
+1) Target: switch from Close level to log returns (default) + optional ATR-normalized delta. Expose via --target {close,logret,atr_delta}.
+2) Features: strict anti-leak scaling (fit on train only per split). Handle missing pandas_ta gracefully.
+3) Validation: implement walk-forward CV (CLI flags --wf-splits, --wf-train-ratio). Produce wf_report.csv.
+4) Baselines: compare vs last-close and EMA(12) persistence; add pips columns.
+5) CPU speed: remove recurrent_dropout; keep dropout only. Ensure determinism (TF_DETERMINISTIC_OPS=1, seeds).
+6) Intervals: MC-dropout at predict (K passes) -> mean, p05, p95 saved to forecast_interval.json.
+7) HPO: narrow space (units 64..192 step 64; lr {1e-3,5e-4,1e-4}; l2 {1e-6,1e-5}; dropout 0..0.3) <= ~30 trials.
+8) Logging/artifacts: dynamic run_id for logs/project_name; save full run config.
+9) Output: print final table comparing model vs baselines on holdout and per window.
+10) Deliver a minimal diff/patch with the key changes.
+
+Success = model MAE(pips) < both baselines on test **and** on average across walk-forward windows.
